@@ -11,22 +11,22 @@ class InstaProfileCrawler:
         usernameInputXpath='//*[@id="loginForm"]/div/div[1]/div/label/input'
         passwordInputXpath='//*[@id="loginForm"]/div/div[2]/div/label/input'
         loginXpath='//*[@id="loginForm"]/div/div[3]/button'
-        username='tripathi8341'
-        password='pinkidi'
+        tester_insta_username='tripathi8341'
+        tester_insta_password='pinkidi'
         self.browserHandle.get('https://www.instagram.com/accounts/login/')
         usernameInput=self.browserHandle.find_element_by_xpath(usernameInputXpath)
         passwordInput=self.browserHandle.find_element_by_xpath(passwordInputXpath)
-        usernameInput.send_keys(username)
-        passwordInput.send_keys(password)
+        usernameInput.send_keys(tester_insta_username)
+        passwordInput.send_keys(tester_insta_password)
         self.browserHandle.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button').click()
         time.sleep(5)
         self.browserHandle.find_element_by_xpath('/html/body/div[5]/div/div/div/div[3]/button[2]').click()
         
     def __init__(self,username):
         self.username=username
-        self.Name=''
+        self.Name=None
         self.age=None
-        self.posts=[]
+        self.posts=None
         self.browserHandle=webdriver.Chrome()
         self.browserHandle.implicitly_wait(8)
         self.instaLogin()
