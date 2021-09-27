@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 import time
 from Post import Post
+import pdb
 
 
 
@@ -15,7 +16,7 @@ class InstaProfileCrawler:
         tester_insta_username='tripathi8341'
         tester_insta_password='pinkidi'
         self.browserHandle.get('https://www.instagram.com/accounts/login/')
-        time.sleep(5)
+        #time.sleep(5)
         usernameInput=self.browserHandle.find_element_by_xpath(usernameInputXpath)
         passwordInput=self.browserHandle.find_element_by_xpath(passwordInputXpath)
         usernameInput.send_keys(tester_insta_username)
@@ -33,7 +34,8 @@ class InstaProfileCrawler:
         self.posts=None
         self.isVerified=None
         self.browserHandle=webdriver.Chrome()
-        self.instaLogin()
+        self.browserHandle.implicitly_wait(8)
+        #self.instaLogin()
     def go_to_profile(self):
         if not self.isProfilePage():
             self.browserHandle.get(InstaProfileCrawler.origin+self.username)
@@ -41,7 +43,7 @@ class InstaProfileCrawler:
         if self.Name:
             return self.Name
         self.go_to_profile()
-        #self.Name=self.browserHandle.find_element_by_xpath(InstaProfileCrawler.NameXpathSelector).text
+        self.Name=self.browserHandle.find_element_by_xpath(InstaProfileCrawler.NameXpathSelector).text
         self.Name=self.browserHandle.find_element_by_class_name('rhpdm').text
         return self.Name
     def getAge(self):
@@ -68,15 +70,15 @@ class InstaProfileCrawler:
         self.age=int(age_string[::-1])
         return self.age
     def isProfilePage(self):
-        if self.browserHandle.current_url==InstaProfileCrawler.origin+self.username:
+        if InstaProfileCrawler.origin+self.username in self.browserHandle.current_url:
             return True
         else:
             return False
-    def getFollowers(self):
+    def get_total_Followers(self):
         if self.totalfollowers:
             return self.totalfollowers
         self.go_to_profile()
-        self.totalfollowers=self.browserHandle.find_elements_by_class_name(' _81NM2')[1].find_element_by_tag_name('span').get_attribute('title')
+        self.totalfollowers=self.browserHandle.find_element_by_css_selector('#react-root > section > main > div > header > section > ul > li:nth-child(2) > a > span').get_attribute('title')
         return self.totalfollowers
     def get_total_posts(self):
         if self.totalposts:
