@@ -25,25 +25,28 @@ class Post:
     def getLikes(self):
         if self.likes:
             return self.likes
-        self.likes=self.browserHandle.find_element_by_css_selector(likes_selector).text
+        self.go_to_post()
+        self.likes=self.browserHandle.find_element_by_css_selector(Post.likes_selector).text
         return self.likes
         
         
     def getHashtags(self):
         if self.hashtags:
             return self.hashtags
-        captions=self.browserHandle.find_element_by_css_selector(caption_selector).text
+        self.go_to_post()
+        captions=self.browserHandle.find_element_by_css_selector(Post.caption_selector).text
         i=0
         hashtags=''
         while i<len(captions):
             if captions[i]=='#':
                 j=i
-                while j<len(caption) and caption[j]!=' ':
-                    hashtags+=caption[j]
+                while j<len(captions) and captions[j]!=' ':
+                    hashtags+=captions[j]
                     j+=1
                 hashtags+=' '
                 i=j
             i+=1
+        self.hashtags=hashtags
         self.captions=captions
         return self.hashtags
         
@@ -51,5 +54,6 @@ class Post:
     def getCaption(self):
         if self.captions:
             return self.captions
-        captions=self.browserHandle.find_element_by_css_selector(caption_selector).text
+        self.go_to_post()
+        captions=self.browserHandle.find_element_by_css_selector(Post.caption_selector).text
         return captions

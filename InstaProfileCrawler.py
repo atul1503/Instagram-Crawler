@@ -49,7 +49,8 @@ class InstaProfileCrawler:
     def go_to_profile(self):
         if not self.isProfilePage() and not self.isLoginDone:
             self.instaLogin()
-        self.browserHandle.get(InstaProfileCrawler.origin+self.username)
+        if not self.isProfilePage():
+            self.browserHandle.get(InstaProfileCrawler.origin+self.username)
         
         
     def getName(self):
@@ -63,13 +64,13 @@ class InstaProfileCrawler:
     def getAge(self):
         if self.age:
             return self.age
-        self.go_to_profile()
+        self.getName()
         self.browserHandle.execute_script("window.open('');")
         self.browserHandle.switch_to.window(self.browserHandle.window_handles[1])
-        self.getName()
         self.browserHandle.get(InstaProfileCrawler.googleBaseUrl+self.Name+' age')
         source=self.browserHandle.page_source
         self.browserHandle.close()
+        self.browserHandle.switch_to.window(self.browserHandle.window_handles[0])
         age_string=''
         for i in range(len(source)):
             if source[i:i+5] in ('years','Years'):
@@ -100,7 +101,8 @@ class InstaProfileCrawler:
         if self.totalposts:
             return self.totalposts
         self.go_to_profile()
-        self.totalposts=self.browserHandle.find_element_by_xpath('//*[@id="react-root"]/section/main/div/ul/li[2]/a').find_element_by_tag_name('span').text
+        self.totalposts=self.browserHandle.find_element_by_xpath('//*[@id="react-root"]/section/main/div/header/section/ul/li[1]/span/span').text
+        return self.totalposts
     
     def getVerificationStatus(self):
         if self.isVerified:
@@ -129,12 +131,12 @@ class InstaProfileCrawler:
     def getYoutube(self):
         if self.youtube:
             return self.youtube
-        self.go_to_profile()
+        self.getName()
         self.browserHandle.execute_script("window.open('');")
         self.browserHandle.switch_to.window(self.browserHandle.window_handles[1])
-        self.getName()
         self.browserHandle.get(InstaProfileCrawler.googleBaseUrl+self.Name+' Youtube Channel')
-        self.youtube=self.browserHandle.find_element_by_css_selector(InstaProfileCrawler.YoutubeChannelSelector).get_attribute('href')
+        self.youtube=self.browserHandle.find_elements_by_css_selector(InstaProfileCrawler.YoutubeChannelSelector)[0].get_attribute('href')
         self.browserHandle.close()
+        self.browserHandle.switch_to.window(self.browserHandle.window_handles[0])
         return self.youtube
         
