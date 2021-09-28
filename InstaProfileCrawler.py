@@ -8,6 +8,7 @@ from selenium.webdriver.common.proxy import Proxy,ProxyType
 class InstaProfileCrawler:
     NameXpathSelector='//*[@id="react-root"]/section/main/div/div[1]/h1'
     origin='https://www.instagram.com/'
+    YoutubeChannelSelector='#rso > div:nth-child(1) > div > div > div > div.yuRUbf > a'
     
     def instaLogin(self):
         usernameInputXpath='//*[@id="loginForm"]/div/div[1]/div/label/input'
@@ -35,6 +36,7 @@ class InstaProfileCrawler:
         self.totalposts=None
         self.totalfollowers=None
         self.posts=None
+        self.youtube=None
         self.isVerified=None
         self.browserHandle=webdriver.Chrome()
         #self.browserHandle.implicitly_wait(8)
@@ -122,4 +124,12 @@ class InstaProfileCrawler:
         return postlinks
     
     def getYoutube(self):
+        if self.youtube:
+            return self.youtube
+        self.browserHandle.execute_script("window.open('');")
+        self.browserHandle.switch_to.window(self.browserHandle.window_handles[1])
+        self.getName()
+        self.browserHandle.get(googleBaseUrl+self.Name+'Youtube Channel')
+        self.youtube=self.browserHandle.find_element_by_css_selector(InstaProfileCrawler.YoutubeChannelSelector).get_attribute('href')
+        return self.youtube
         
