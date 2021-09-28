@@ -6,9 +6,10 @@ from selenium.webdriver.common.proxy import Proxy,ProxyType
 
 
 class InstaProfileCrawler:
-    NameXpathSelector='//*[@id="react-root"]/section/main/div/div[1]/h1'
+    NameXpathSelector='//*[@id="react-root"]/section/main/div/header/section/div[2]/h1'
     origin='https://www.instagram.com/'
     YoutubeChannelSelector='#rso > div:nth-child(1) > div > div > div > div.yuRUbf > a'
+    googleBaseUrl='https://www.google.com/search?q='
     
     def instaLogin(self):
         usernameInputXpath='//*[@id="loginForm"]/div/div[1]/div/label/input'
@@ -23,11 +24,12 @@ class InstaProfileCrawler:
         usernameInput.send_keys(tester_insta_username)
         passwordInput.send_keys(tester_insta_password)
         self.browserHandle.find_element_by_xpath('//*[@id="loginForm"]/div/div[3]/button').click()
-        time.sleep(5)
-        self.browserHandle.find_element_by_css_selector('#loginForm > div > div:nth-child(3) > button > div').click()
-        if self.browserHandle.find_element_by_css_selector('#slfErrorAlert'):
+        if self.browserHandle.find_elements_by_css_selector('#slfErrorAlert'):
             self.browserHandle.close()
             print('CONGRATULATIONS INSTAGRAM BLOCKED YOU. WAIT FOR ETERNITY NOW'.center())
+        time.sleep(4)            
+        self.browserHandle.find_element_by_css_selector('body > div.RnEpo.Yx5HN > div > div > div > div.mt3GC > button.aOOlW.HoLwm').click()
+        self.isLoginDone=True
     
     def __init__(self,username):
         self.username=username
@@ -38,16 +40,18 @@ class InstaProfileCrawler:
         self.posts=None
         self.youtube=None
         self.isVerified=None
+        self.isLoginDone=None
         self.browserHandle=webdriver.Chrome()
         #self.browserHandle.implicitly_wait(8)
         #self.instaLogin()
         
         
     def go_to_profile(self):
-        if not self.isProfilePage():
+        if not self.isProfilePage() and not self.isLoginDone:
             self.instaLogin()
-            self.browserHandle.get(InstaProfileCrawler.origin+self.username)
-    
+        self.browserHandle.get(InstaProfileCrawler.origin+self.username)
+        
+        
     def getName(self):
         if self.Name:
             return self.Name
@@ -60,11 +64,10 @@ class InstaProfileCrawler:
         if self.age:
             return self.age
         self.go_to_profile()
-        googleBaseUrl='https://www.google.com/search?q='
         self.browserHandle.execute_script("window.open('');")
         self.browserHandle.switch_to.window(self.browserHandle.window_handles[1])
         self.getName()
-        self.browserHandle.get(googleBaseUrl+self.Name+' age')
+        self.browserHandle.get(InstaProfileCrawler.googleBaseUrl+self.Name+' age')
         source=self.browserHandle.page_source
         self.browserHandle.close()
         age_string=''
@@ -126,10 +129,12 @@ class InstaProfileCrawler:
     def getYoutube(self):
         if self.youtube:
             return self.youtube
+        self.go_to_profile()
         self.browserHandle.execute_script("window.open('');")
         self.browserHandle.switch_to.window(self.browserHandle.window_handles[1])
         self.getName()
-        self.browserHandle.get(googleBaseUrl+self.Name+'Youtube Channel')
+        self.browserHandle.get(InstaProfileCrawler.googleBaseUrl+self.Name+' Youtube Channel')
         self.youtube=self.browserHandle.find_element_by_css_selector(InstaProfileCrawler.YoutubeChannelSelector).get_attribute('href')
+        self.browserHandle.close()
         return self.youtube
         
