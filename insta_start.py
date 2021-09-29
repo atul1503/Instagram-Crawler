@@ -6,15 +6,17 @@ from Xlsx_maker import writer
 def getUsernames():
     return ['cristiano','sadhguru']
     
+    
 def everything_starts_here():
+    handle=None
     usernames=getUsernames()
-    flag=False
     for id in usernames:
-        if flag:
-            profile=InstaProfileCrawler(id,profile.browserHandle)
-        else:
-            profile=InstaProfileCrawler(id)
-        flag=True    
+        profile=InstaProfileCrawler(id)
+        if handle:
+            profile.browserHandle.close()
+            profile.browserHandle=handle
+            
+        handle=profile.browserHandle
         profile.getName()
         profile.getAge()
         profile.get_total_Followers()

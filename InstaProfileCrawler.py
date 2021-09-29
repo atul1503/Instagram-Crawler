@@ -31,7 +31,7 @@ class InstaProfileCrawler:
         self.browserHandle.find_element_by_css_selector('#react-root > section > main > div > div > div > div > button').click()
         self.isLoginDone=True
     
-    def __init__(self,username,browserHandle=None):
+    def __init__(self,username):
         self.username=username
         self.Name=None
         self.age=None
@@ -41,8 +41,7 @@ class InstaProfileCrawler:
         self.youtube=None
         self.isVerified=None
         self.isLoginDone=None
-        if not browserHandle:
-            self.browserHandle=webdriver.Chrome()
+        self.browserHandle=webdriver.Chrome()
         #self.browserHandle.implicitly_wait(8)
         #self.instaLogin()
         
@@ -127,6 +126,7 @@ class InstaProfileCrawler:
             i-=1
         for i in range(len(postlinks)):
             postlinks[i]=postlinks[i].get_attribute('href')
+        self.posts=postlinks
         return postlinks
     
     def getYoutube(self):
