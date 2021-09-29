@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 class Post:
     likes_selector='#react-root > section > main > div > div.ltEKP > article > div > div.qF0y9.Igw0E.IwRSH.eGOV_._4EzTm > div > div.eo2As > section.EDfFK.ygqzn > div > div > a > span'
     caption_selector='#react-root > section > main > div > div.ltEKP > article > div > div.qF0y9.Igw0E.IwRSH.eGOV_._4EzTm > div > div.eo2As > div.EtaWk > ul > div > li > div > div > div.C4VMK > span'
-    
+    media_count=0
     
     def __init__(self,postlink,browserHandle):
         self.likes=None
@@ -60,3 +60,21 @@ class Post:
         self.go_to_post()
         captions=self.browserHandle.find_element_by_css_selector(Post.caption_selector).text
         return captions
+        
+    def downloadPhoto(self,elem):
+        with open('media/'+str(Post.media_count)+'.png','wb') as file:
+            file.write(elem.screenshot_as_png)
+        
+    def getMedia(self):
+        if self.media:
+            return media
+        img=self.browserHandle.find_elements_by_tag_name('img')
+        vid=self.browserHandle.find_elements_by_tag_name('video')
+        if img:
+            self.downloadPhoto(self.media)
+            self.media_location='media/'+str(Post.media_count)+'.png'
+            Post.media_count+=1
+            return self.media
+        if vid:
+            self.media=vid.get_attribute('src')
+            return self.media
