@@ -3,7 +3,7 @@ import xlsxwriter as xl
 class writer:
     
     
-    def __init__(self,profileObj,postObj,workbook_name):
+    def __init__(self,profileObj,postObjArray,workbook_name):
         self.profileObj=profileObj
         self.postObjArray=postObjArray
         self.sheet_name=sheet_name

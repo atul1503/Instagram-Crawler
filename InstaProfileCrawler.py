@@ -28,10 +28,10 @@ class InstaProfileCrawler:
             self.browserHandle.close()
             print('CONGRATULATIONS INSTAGRAM BLOCKED YOU. WAIT FOR ETERNITY NOW'.center())
         time.sleep(4)            
-        self.browserHandle.find_element_by_css_selector('body > div.RnEpo.Yx5HN > div > div > div > div.mt3GC > button.aOOlW.HoLwm').click()
+        self.browserHandle.find_element_by_css_selector('#react-root > section > main > div > div > div > div > button').click()
         self.isLoginDone=True
     
-    def __init__(self,username):
+    def __init__(self,username,browserHandle=None):
         self.username=username
         self.Name=None
         self.age=None
@@ -41,7 +41,8 @@ class InstaProfileCrawler:
         self.youtube=None
         self.isVerified=None
         self.isLoginDone=None
-        self.browserHandle=webdriver.Chrome()
+        if not browserHandle:
+            self.browserHandle=webdriver.Chrome()
         #self.browserHandle.implicitly_wait(8)
         #self.instaLogin()
         
