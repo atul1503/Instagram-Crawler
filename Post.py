@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 import time
+from selenium.common.exceptions import NoSuchElementException
 
 
 class Post:
@@ -9,7 +10,6 @@ class Post:
     
     
     def __init__(self,postlink,browserHandle):
-        self.url=None
         self.likes=None
         self.hashtags=None
         self.comments=None
@@ -26,7 +26,10 @@ class Post:
         if self.likes:
             return self.likes
         self.go_to_post()
-        self.likes=self.browserHandle.find_element_by_css_selector(Post.likes_selector).text
+        try:
+            self.likes=self.browserHandle.find_element_by_css_selector(Post.likes_selector).text
+        except NoSuchElementException:
+            return None
         return self.likes
         
         

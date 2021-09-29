@@ -8,8 +8,9 @@ from selenium.webdriver.common.proxy import Proxy,ProxyType
 class InstaProfileCrawler:
     NameXpathSelector='//*[@id="react-root"]/section/main/div/header/section/div[2]/h1'
     origin='https://www.instagram.com/'
-    YoutubeChannelSelector='#rso > div:nth-child(1) > div > div > div > div.yuRUbf > a'
+    YoutubeChannelSelector='#rso > div:nth-child(3) > div > div > div.yuRUbf > a > h3'
     googleBaseUrl='https://www.google.com/search?q='
+    isLoginDone=False
     
     def instaLogin(self):
         usernameInputXpath='//*[@id="loginForm"]/div/div[1]/div/label/input'
@@ -29,7 +30,7 @@ class InstaProfileCrawler:
             print('CONGRATULATIONS INSTAGRAM BLOCKED YOU. WAIT FOR ETERNITY NOW'.center())
         time.sleep(4)            
         self.browserHandle.find_element_by_css_selector('#react-root > section > main > div > div > div > div > button').click()
-        self.isLoginDone=True
+        InstaProfileCrawler.isLoginDone=True
     
     def __init__(self,username):
         self.username=username
@@ -40,14 +41,13 @@ class InstaProfileCrawler:
         self.posts=None
         self.youtube=None
         self.isVerified=None
-        self.isLoginDone=None
         self.browserHandle=webdriver.Chrome()
         #self.browserHandle.implicitly_wait(8)
         #self.instaLogin()
         
         
     def go_to_profile(self):
-        if not self.isProfilePage() and not self.isLoginDone:
+        if not self.isLoginDone:
             self.instaLogin()
         if not self.isProfilePage():
             self.browserHandle.get(InstaProfileCrawler.origin+self.username)
@@ -136,7 +136,11 @@ class InstaProfileCrawler:
         self.browserHandle.execute_script("window.open('');")
         self.browserHandle.switch_to.window(self.browserHandle.window_handles[1])
         self.browserHandle.get(InstaProfileCrawler.googleBaseUrl+self.Name+' Youtube Channel')
-        self.youtube=self.browserHandle.find_elements_by_css_selector(InstaProfileCrawler.YoutubeChannelSelector)[0].get_attribute('href')
+        self.youtube=self.browserHandle.find_elements_by_tag_name('a')
+        for i in self.youtube:
+            if 'youtube.com/channel/' or 'youtube.com/user/' in i.get_attribute('href'):
+                self.youtube=i.get_attribute('href')
+                break
         self.browserHandle.close()
         self.browserHandle.switch_to.window(self.browserHandle.window_handles[0])
         return self.youtube
