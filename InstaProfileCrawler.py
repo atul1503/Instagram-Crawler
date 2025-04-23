@@ -16,8 +16,8 @@ class InstaProfileCrawler:
         usernameInputXpath='//*[@id="loginForm"]/div/div[1]/div/label/input'
         passwordInputXpath='//*[@id="loginForm"]/div/div[2]/div/label/input'
         loginXpath='//*[@id="react-root"]/section/main/div/div[4]/article/div[1]/div//a'
-        tester_insta_username='tripathi8341'
-        tester_insta_password='pinkidi'
+        tester_insta_username=''
+        tester_insta_password=''
         self.browserHandle.get('https://www.instagram.com/accounts/login/')
         time.sleep(5)
         usernameInput=self.browserHandle.find_element_by_xpath(usernameInputXpath)
